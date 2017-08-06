@@ -24,6 +24,7 @@ type Client struct {
 	MsgCount    int
 	MsgQoS      byte
 	Quiet       bool
+	Keepalive   time.Duration
 }
 
 func (c *Client) Run(res chan *RunResults) {
@@ -138,7 +139,9 @@ func (c *Client) pubMessages(in, out chan *Message, doneGen, donePub chan bool) 
 	if c.WillTopic != "" && c.WillMessage != "" {
 		opts.SetWill(c.WillTopic, c.WillMessage, c.MsgQoS, false)
 	}
-
+	if c.Keepalive != 0 {
+		opts.SetKeepAlive(c.Keepalive)
+	}
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
 	token.Wait()

@@ -71,6 +71,8 @@ func main() {
 		clients     = flag.Int("clients", 10, "Number of clients to start")
 		format      = flag.String("format", "text", "Output format: text|json")
 		quiet       = flag.Bool("quiet", false, "Suppress logs while running")
+		keepalive   = flag.Duration("keepalive", 0, "MQTT keepalive time")
+		holdtime    = flag.Duration("holdtime", 0, "MQTT connection hold time")
 	)
 
 	flag.Parse()
@@ -97,9 +99,12 @@ func main() {
 			MsgCount:    *count,
 			MsgQoS:      byte(*qos),
 			Quiet:       *quiet,
+			Keepalive:   *keepalive,
 		}
 		go c.Run(resCh)
 	}
+
+	time.Sleep(*holdtime)
 
 	// collect the results
 	results := make([]*RunResults, *clients)
