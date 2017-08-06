@@ -58,16 +58,19 @@ type JSONResults struct {
 func main() {
 
 	var (
-		broker   = flag.String("broker", "tcp://localhost:1883", "MQTT broker endpoint as scheme://host:port")
-		topic    = flag.String("topic", "/test", "MQTT topic for outgoing messages")
-		username = flag.String("username", "", "MQTT username (empty if auth disabled)")
-		password = flag.String("password", "", "MQTT password (empty if auth disabled)")
-		qos      = flag.Int("qos", 1, "QoS for published messages")
-		size     = flag.Int("size", 100, "Size of the messages payload (bytes)")
-		count    = flag.Int("count", 100, "Number of messages to send per client")
-		clients  = flag.Int("clients", 10, "Number of clients to start")
-		format   = flag.String("format", "text", "Output format: text|json")
-		quiet    = flag.Bool("quiet", false, "Suppress logs while running")
+		broker      = flag.String("broker", "tcp://localhost:1883", "MQTT broker endpoint as scheme://host:port")
+		topic       = flag.String("topic", "/test", "MQTT topic for outgoing messages")
+		username    = flag.String("username", "", "MQTT username (empty if auth disabled)")
+		password    = flag.String("password", "", "MQTT password (empty if auth disabled)")
+		token       = flag.String("token", "", "LIEPIN MQTT token")
+		willTopic   = flag.String("willtopic", "1", "LIEPIN MQTT imapp")
+		willMessage = flag.String("willmessage", "", "LIEPIN MQTT imid")
+		qos         = flag.Int("qos", 1, "QoS for published messages")
+		size        = flag.Int("size", 100, "Size of the messages payload (bytes)")
+		count       = flag.Int("count", 100, "Number of messages to send per client")
+		clients     = flag.Int("clients", 10, "Number of clients to start")
+		format      = flag.String("format", "text", "Output format: text|json")
+		quiet       = flag.Bool("quiet", false, "Suppress logs while running")
 	)
 
 	flag.Parse()
@@ -82,15 +85,18 @@ func main() {
 			log.Println("Starting client ", i)
 		}
 		c := &Client{
-			ID:         i,
-			BrokerURL:  *broker,
-			BrokerUser: *username,
-			BrokerPass: *password,
-			MsgTopic:   *topic,
-			MsgSize:    *size,
-			MsgCount:   *count,
-			MsgQoS:     byte(*qos),
-			Quiet:      *quiet,
+			ID:          i,
+			BrokerURL:   *broker,
+			BrokerUser:  *username,
+			BrokerPass:  *password,
+			BrokerToken: *token,
+			WillTopic:   *willTopic,
+			WillMessage: *willMessage,
+			MsgTopic:    *topic,
+			MsgSize:     *size,
+			MsgCount:    *count,
+			MsgQoS:      byte(*qos),
+			Quiet:       *quiet,
 		}
 		go c.Run(resCh)
 	}

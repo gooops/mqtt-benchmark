@@ -12,15 +12,18 @@ import (
 )
 
 type Client struct {
-	ID         int
-	BrokerURL  string
-	BrokerUser string
-	BrokerPass string
-	MsgTopic   string
-	MsgSize    int
-	MsgCount   int
-	MsgQoS     byte
-	Quiet      bool
+	ID          int
+	BrokerURL   string
+	BrokerUser  string
+	BrokerPass  string
+	BrokerToken string
+	WillTopic   string
+	WillMessage string
+	MsgTopic    string
+	MsgSize     int
+	MsgCount    int
+	MsgQoS      byte
+	Quiet       bool
 }
 
 func (c *Client) Run(res chan *RunResults) {
@@ -123,11 +126,17 @@ func (c *Client) pubMessages(in, out chan *Message, doneGen, donePub chan bool) 
 		SetAutoReconnect(true).
 		SetOnConnectHandler(onConnected).
 		SetConnectionLostHandler(func(client mqtt.Client, reason error) {
-		log.Printf("CLIENT %v lost connection to the broker: %v. Will reconnect...\n", c.ID, reason.Error())
-	})
+			log.Printf("CLIENT %v lost connection to the broker: %v. Will reconnect...\n", c.ID, reason.Error())
+		})
 	if c.BrokerUser != "" && c.BrokerPass != "" {
 		opts.SetUsername(c.BrokerUser)
 		opts.SetPassword(c.BrokerPass)
+	}
+	if c.BrokerToken != "" {
+		opts.SetUsername(c.BrokerToken)
+	}
+	if c.WillTopic != "" && c.WillMessage != "" {
+		SetWill(c.WillTopic, c.WillMessage, m.QoS, false)
 	}
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
