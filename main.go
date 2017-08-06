@@ -73,6 +73,7 @@ func main() {
 		quiet       = flag.Bool("quiet", false, "Suppress logs while running")
 		keepalive   = flag.Duration("keepalive", 0, "MQTT keepalive time")
 		holdtime    = flag.Duration("holdtime", 0, "MQTT connection hold time")
+		conntimeout = flag.Duration("conntimeout", 3, "MQTT connection timeout")
 	)
 
 	flag.Parse()
@@ -87,19 +88,20 @@ func main() {
 			log.Println("Starting client ", i)
 		}
 		c := &Client{
-			ID:          i,
-			BrokerURL:   *broker,
-			BrokerUser:  *username,
-			BrokerPass:  *password,
-			BrokerToken: *token,
-			WillTopic:   *willTopic,
-			WillMessage: *willMessage,
-			MsgTopic:    *topic,
-			MsgSize:     *size,
-			MsgCount:    *count,
-			MsgQoS:      byte(*qos),
-			Quiet:       *quiet,
-			Keepalive:   *keepalive,
+			ID:             i,
+			BrokerURL:      *broker,
+			BrokerUser:     *username,
+			BrokerPass:     *password,
+			BrokerToken:    *token,
+			WillTopic:      *willTopic,
+			WillMessage:    *willMessage,
+			MsgTopic:       *topic,
+			MsgSize:        *size,
+			MsgCount:       *count,
+			MsgQoS:         byte(*qos),
+			Quiet:          *quiet,
+			Keepalive:      *keepalive,
+			ConnectTimeout: *conntimeout,
 		}
 		go c.Run(resCh)
 	}
