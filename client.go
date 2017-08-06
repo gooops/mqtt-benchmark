@@ -136,7 +136,7 @@ func (c *Client) pubMessages(in, out chan *Message, doneGen, donePub chan bool) 
 		opts.SetUsername(c.BrokerToken)
 	}
 	if c.WillTopic != "" && c.WillMessage != "" {
-		SetWill(c.WillTopic, c.WillMessage, m.QoS, false)
+		c.SetWill(c.WillTopic, c.WillMessage, c.MsgQoS, false)
 	}
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
