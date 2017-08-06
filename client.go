@@ -23,6 +23,7 @@ type Client struct {
 	MsgSize        int
 	MsgCount       int
 	MsgQoS         byte
+	WillQos        byte
 	Quiet          bool
 	Keepalive      time.Duration
 	ConnectTimeout time.Duration
@@ -140,7 +141,7 @@ func (c *Client) pubMessages(in, out chan *Message, doneGen, donePub chan bool) 
 		opts.SetUsername(c.BrokerToken)
 	}
 	if c.WillTopic != "" && c.WillMessage != "" {
-		opts.SetWill(c.WillTopic, c.WillMessage, c.MsgQoS, false)
+		opts.SetWill(c.WillTopic, c.WillMessage, c.WillQos, false)
 	}
 
 	client := mqtt.NewClient(opts)

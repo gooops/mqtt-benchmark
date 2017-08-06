@@ -65,7 +65,8 @@ func main() {
 		token       = flag.String("token", "", "LIEPIN MQTT token")
 		willTopic   = flag.String("willtopic", "1", "LIEPIN MQTT imapp")
 		willMessage = flag.String("willmessage", "", "LIEPIN MQTT imid")
-		qos         = flag.Int("qos", 1, "QoS for published messages")
+		msgqos      = flag.Int("msgqos", 1, "QoS for published messages")
+		willqos     = flag.Int("willqos", 0, "QoS for will messages")
 		size        = flag.Int("size", 100, "Size of the messages payload (bytes)")
 		count       = flag.Int("count", 100, "Number of messages to send per client")
 		clients     = flag.Int("clients", 10, "Number of clients to start")
@@ -98,7 +99,8 @@ func main() {
 			MsgTopic:       *topic,
 			MsgSize:        *size,
 			MsgCount:       *count,
-			MsgQoS:         byte(*qos),
+			MsgQoS:         byte(*msgqos),
+			WillQos:        byte(*willqos),
 			Quiet:          *quiet,
 			Keepalive:      *keepalive,
 			ConnectTimeout: *conntimeout,
